@@ -20,7 +20,8 @@ rosidl_generate_interfaces(${PROJECT_NAME}
   "msg/Odometry.msg"
   "msg/SetConfig.msg"
   "msg/SetWalking.msg"
-  "srv/GetConfig.srv")
+  "srv/GetConfig.srv"
+  "srv/SaveConfig.srv")
 
 ament_export_dependencies(rosidl_default_runtime)
 ament_package()
