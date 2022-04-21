@@ -20,6 +20,7 @@ rosidl_generate_interfaces(${PROJECT_NAME}
   "msg/Odometry.msg"
   "msg/SetConfig.msg"
   "msg/SetWalking.msg"
+  "msg/Status.msg"
   "srv/GetConfig.srv"
   "srv/SaveConfig.srv")
 
