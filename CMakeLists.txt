@@ -17,7 +17,7 @@ find_package(ament_cmake REQUIRED)
 find_package(rosidl_default_generators REQUIRED)
 
 rosidl_generate_interfaces(${PROJECT_NAME}
-  "msg/Odometry.msg"
+  "msg/Point2.msg"
   "msg/SetConfig.msg"
   "msg/SetWalking.msg"
   "msg/Status.msg"
