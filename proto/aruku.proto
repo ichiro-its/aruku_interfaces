@@ -6,6 +6,8 @@ service Config {
   rpc GetConfig (Empty) returns (ConfigWalking) {}
 
   rpc SaveConfig (ConfigWalking) returns (Empty) {}
+
+  rpc SetMainConfig (SetWalking) returns (Empty) {}
 }
 
 message Empty {}
