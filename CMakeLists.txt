@@ -20,47 +20,36 @@ set(protobuf_MODULE_COMPATIBLE TRUE)
 find_package(Protobuf CONFIG REQUIRED)
 message(STATUS "Using protobuf ${Protobuf_VERSION}")
 
-set(_REFLECTION gRPC::grpc++_reflection)
-set(_PROTOBUF_PROTOC $<TARGET_FILE:protobuf::protoc>)
-
 find_package(gRPC CONFIG REQUIRED)
 message(STATUS "Using gRPC ${gRPC_VERSION}")
 
-set(_GRPC_GRPCPP gRPC::grpc++)
-set(gRPC_FOUND TRUE)
-# Proto file
-get_filename_component(aruku_proto "./proto/aruku.proto" ABSOLUTE)
-get_filename_component(aruku_proto_path "${aruku_proto}" PATH)
-
 # Generated sources
+file(MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/proto)
 add_custom_command(
-      OUTPUT "${CMAKE_CURRENT_BINARY_DIR}/aruku.pb.cc"
-            "${CMAKE_CURRENT_BINARY_DIR}/aruku.pb.h"
-            "${CMAKE_CURRENT_BINARY_DIR}/aruku.grpc.pb.cc"
-            "${CMAKE_CURRENT_BINARY_DIR}/aruku.grpc.pb.h"
-      COMMAND ${_PROTOBUF_PROTOC}
-    
-      ARGS --grpc_out "${CMAKE_CURRENT_BINARY_DIR}"
-        --cpp_out "${CMAKE_CURRENT_BINARY_DIR}"
-        -I "${aruku_proto_path}"
-        --plugin=protoc-gen-grpc="$<TARGET_FILE:gRPC::grpc_cpp_plugin>"
-        "${aruku_proto}"
-      DEPENDS "${aruku_proto}")
+      OUTPUT "${CMAKE_CURRENT_BINARY_DIR}/proto/aruku.pb.cc"
+            "${CMAKE_CURRENT_BINARY_DIR}/proto/aruku.pb.h"
+            "${CMAKE_CURRENT_BINARY_DIR}/proto/aruku.grpc.pb.cc"
+            "${CMAKE_CURRENT_BINARY_DIR}/proto/aruku.grpc.pb.h"
+      COMMAND $<TARGET_FILE:protobuf::protoc>
+      ARGS --grpc_out "${CMAKE_CURRENT_BINARY_DIR}/proto"
+        --cpp_out "${CMAKE_CURRENT_BINARY_DIR}/proto"
+        -I ${CMAKE_CURRENT_SOURCE_DIR}/proto
+        --plugin=protoc-gen-grpc=$<TARGET_FILE:gRPC::grpc_cpp_plugin>
+        ${CMAKE_CURRENT_SOURCE_DIR}/proto/aruku.proto
+      DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/proto/aruku.proto)
 
 
 add_library(aruku_proto SHARED
-  "${CMAKE_CURRENT_BINARY_DIR}/aruku.pb.cc"
-  "${CMAKE_CURRENT_BINARY_DIR}/aruku.pb.h"
-  "${CMAKE_CURRENT_BINARY_DIR}/aruku.grpc.pb.cc"
-  "${CMAKE_CURRENT_BINARY_DIR}/aruku.grpc.pb.h"
+  "${CMAKE_CURRENT_BINARY_DIR}/proto/aruku.pb.cc"
+  "${CMAKE_CURRENT_BINARY_DIR}/proto/aruku.pb.h"
+  "${CMAKE_CURRENT_BINARY_DIR}/proto/aruku.grpc.pb.cc"
+  "${CMAKE_CURRENT_BINARY_DIR}/proto/aruku.grpc.pb.h"
 )
 
-# ament_target_dependencies(aruku_proto
-#   gRPC)
+target_compile_options(aruku_proto PRIVATE -fPIC)
+target_compile_features(aruku_proto PUBLIC cxx_std_17)
 
-target_link_libraries(aruku_proto PUBLIC
-  gRPC::grpc++_reflection
-  gRPC::grpc++
+target_link_libraries(aruku_proto PUBLIC  
   protobuf::libprotobuf
 )
 
@@ -73,8 +62,8 @@ rosidl_generate_interfaces(${PROJECT_NAME}
   "srv/SaveConfig.srv")
 
 install (
-  DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
-  DESTINATION include
+  DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/proto/
+  DESTINATION include/${PROJECT_NAME}
 )
 
 install (
