@@ -44,5 +44,4 @@ message Status {
 
 message AppStatus {
   bool action_manager_status = 1;
-  bool walk_setting_status = 2;
 }
