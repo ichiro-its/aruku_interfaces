@@ -12,6 +12,8 @@ service Config {
   rpc SetMainConfig (SetWalking) returns (Empty) {}
 
   rpc SetAppStatus (AppStatus) returns (Empty) {}
+
+  rpc LoadConfig (Empty) returns (Empty) {}
 }
 
 message Empty {}
