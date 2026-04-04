@@ -20,6 +20,7 @@ rosidl_generate_interfaces(${PROJECT_NAME}
   "msg/Point2.msg"
   "msg/SetConfig.msg"
   "msg/SetWalking.msg"
+  "msg/WalkPhase.msg"
   "msg/Status.msg"
   "srv/GetConfig.srv"
   "srv/SaveConfig.srv")
